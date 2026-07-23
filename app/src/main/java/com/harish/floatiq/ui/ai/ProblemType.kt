@@ -1,0 +1,36 @@
+package com.harish.floatiq.ui.ai
+
+enum class ProblemType {
+
+    BASIC_ARITHMETIC,
+
+    LINEAR_EQUATION,
+
+    QUADRATIC_EQUATION,
+
+    FACTORIZATION,
+
+    DIFFERENCE_OF_SQUARES,
+
+    EXPANSION,
+
+    SIMPLIFICATION,
+
+    SIMULTANEOUS_EQUATION,
+
+    TRIGONOMETRY,
+
+    LOGARITHM,
+
+    NATURAL_LOG,
+
+    SQUARE_ROOT,
+
+    POWER,
+    PERCENTAGE,
+
+    GEOMETRY,
+
+    WORD_PROBLEM,
+    UNKNOWN
+}
