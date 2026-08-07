@@ -1,5 +1,3 @@
-//package com.harish.floatiq.ui.history
-
 package com.harish.floatiq.ui.history
 
 import androidx.activity.compose.BackHandler
@@ -13,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
-import com.harish.floatiq.storage.HistoryStorage
+//import com.harish.floatiq.storage.HistoryStorage
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.rememberSwipeToDismissBoxState
@@ -34,6 +32,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.runtime.collectAsState
+import com.harish.floatiq.data.HistoryDatabase
+import com.harish.floatiq.data.HistoryRepository
+import kotlinx.coroutines.launch
 @Composable
 fun HistoryScreen(
 
@@ -49,12 +51,23 @@ fun HistoryScreen(
         LocalContext.current
 
 
-    var history by remember {
-
-        mutableStateOf(
-            HistoryStorage.getHistory(context)
+//    var history by remember {
+//
+//        mutableStateOf(
+//            HistoryStorage.getHistory(context)
+//        )
+//    }
+    val repository = remember {
+        HistoryRepository(
+            HistoryDatabase.getDatabase(context).historyDao()
         )
     }
+
+    val history by repository
+        .allHistory
+        .collectAsState(initial = emptyList())
+
+    val scope = rememberCoroutineScope()
     var showHistoryGuide by remember {
         mutableStateOf(false)
     }
@@ -149,11 +162,14 @@ fun HistoryScreen(
                 .padding(vertical = 12.dp)
                 .clickable {
 
-                    HistoryStorage.clearHistory(
-                        context
-                    )
-
-                    history = mutableListOf()
+//                    HistoryStorage.clearHistory(
+//                        context
+//                    )
+//
+//                    history = mutableListOf()
+                    scope.launch {
+                        repository.clearHistory()
+                    }
                 }
         )
         if (history.isEmpty()) {
@@ -198,15 +214,18 @@ fun HistoryScreen(
                 )
                {
 
-                    HistoryStorage.deleteHistoryItem(
-                        context,
-                        item
-                    )
-
-                    history =
-                        HistoryStorage.getHistory(
-                            context
-                        )
+//                    HistoryStorage.deleteHistoryItem(
+//                        context,
+//                        item
+//                    )
+//
+//                    history =
+//                        HistoryStorage.getHistory(
+//                            context
+//                        )
+                   scope.launch {
+                       repository.deleteHistory(item)
+                   }
                 }
 
 

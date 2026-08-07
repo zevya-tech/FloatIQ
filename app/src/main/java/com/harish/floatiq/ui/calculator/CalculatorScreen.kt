@@ -25,7 +25,7 @@ import com.harish.floatiq.ui.scientific.ScientificCalculatorButton
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.platform.LocalContext
-import com.harish.floatiq.storage.HistoryStorage
+//import com.harish.floatiq.storage.HistoryStorage
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.viewinterop.AndroidView
 import android.view.Gravity
@@ -46,6 +46,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import kotlinx.coroutines.*
 import com.harish.floatiq.storage.EngagementTracker
 import android.media.AudioAttributes
+import androidx.compose.runtime.collectAsState
+import com.harish.floatiq.data.HistoryDatabase
+import com.harish.floatiq.data.HistoryItem
+import com.harish.floatiq.data.HistoryRepository
+import kotlinx.coroutines.launch
 @Composable
 //fun CalculatorScreen() {
 fun CalculatorScreen(
@@ -103,6 +108,13 @@ fun insertText(value: String) {
         onBack()
     }
     val context = LocalContext.current
+    val repository = remember {
+        HistoryRepository(
+            HistoryDatabase.getDatabase(context).historyDao()
+        )
+    }
+
+    val scope = rememberCoroutineScope()
     val soundPool = remember {
         SoundPool.Builder()
             .setMaxStreams(5)
@@ -810,11 +822,26 @@ fun playKeySound() {
                                         ScientificCalculatorEngine
                                             .evaluate(cleanExpression)
 
-                                    HistoryStorage.saveCalculation(
-                                        context,
-                                        cleanExpression,
-                                        result
-                                    )
+//                                    HistoryStorage.saveCalculation(
+//                                        context,
+//                                        cleanExpression,
+//                                        result
+//                                    )
+                                    if (
+                                        result != "Error" &&
+                                        result != "Unsupported"
+                                    ) {
+                                        scope.launch {
+
+                                            repository.insertHistory(
+                                                HistoryItem(
+                                                    expression = cleanExpression,
+                                                    result = result,
+                                                    timestamp = System.currentTimeMillis()
+                                                )
+                                            )
+                                        }
+                                    }
                                     if (
                                         result != "Error" &&
                                         result != "Unsupported"

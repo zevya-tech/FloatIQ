@@ -88,7 +88,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import android.provider.Settings
-import android.util.Log
+//import android.util.Log
 import com.harish.floatiq.storage.EngagementTracker
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -408,15 +408,7 @@ fun OCRScannerScreen(
             OCRQuestionProcessor.process(
                 scannedText
             )
-        android.util.Log.d(
-            "OCR_PROCESS",
-            """
-Text: $scannedText
-Question: ${questionResult.isQuestion}
-Expression: ${questionResult.expression}
-Type: ${questionResult.detectedType}
-""".trimIndent()
-        )
+
         if (questionResult.isQuestion) {
 
             detectedType =
@@ -426,34 +418,14 @@ Type: ${questionResult.detectedType}
             questionResult.expression
 
         problemInfo = null
-        android.util.Log.d(
-            "ProblemClassifier",
-            problemInfo.toString()
-        )
+
 
         val cleanedText =
             OCRProcessor.normalizeMath(
                 scannedText
             )
                 .trim()
-        Log.d(
-            "OCR_DEBUG",
-            """
-cleanedText = $cleanedText
-containsDigit = ${cleanedText.any { it.isDigit() }}
-containsSin = ${cleanedText.contains("sin")}
-containsCos = ${cleanedText.contains("cos")}
-containsTan = ${cleanedText.contains("tan")}
-containsLog = ${cleanedText.contains("log")}
-containsLn = ${cleanedText.contains("ln")}
-containsSqrt = ${cleanedText.contains("sqrt")}
-containsPi = ${cleanedText.contains("pi")}
-hasEulerNumber = ${'$'}{hasEulerNumber}
-contains² = ${cleanedText.contains("²")}
-contains³ = ${cleanedText.contains("³")}
-matchesMathRegex = ${cleanedText.matches(MATH_REGEX)}
-""".trimIndent()
-        )
+
         val hasEulerNumber =
             cleanedText == "e" ||
                     cleanedText.contains("e^") ||
@@ -531,15 +503,7 @@ matchesMathRegex = ${cleanedText.matches(MATH_REGEX)}
         canSolve =
             detectedType == "🧮 Math Expression" ||
                     detectedType == "📘 Algebra Equation"
-        Log.d(
-            "OCR_DEBUG",
-            """
-DetectedType: $detectedType
-CanSolve: $canSolve
-ScannedText: $scannedText
-CleanedText: $cleanedText
-""".trimIndent()
-        )
+
 
         if (
             detectedType == "🧮 Math Expression" ||
@@ -549,10 +513,6 @@ CleanedText: $cleanedText
                 ProblemClassifier.classify(
                     scannedText
                 )
-            Log.d(
-                "OCR_DEBUG",
-                "ProblemInfo = $problemInfo"
-            )
         }
         if (scannedText.isNotBlank()) {
 
@@ -1423,10 +1383,7 @@ $scannedText
                                                     scannedText
                                                 }
                                             )
-                                        android.util.Log.d(
-                                            "OCR_DEBUG",
-                                            expression
-                                        )
+
                                         val solution =
                                             MathSolutionEngine.solve(
                                                 expression

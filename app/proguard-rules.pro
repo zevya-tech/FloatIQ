@@ -86,3 +86,7 @@
 # Prevent warnings
 -dontwarn org.jetbrains.annotations.**
 -dontwarn javax.annotation.**
+
+# Room
+-keep class androidx.room.** { *; }
+-keep interface androidx.room.** { *; }
